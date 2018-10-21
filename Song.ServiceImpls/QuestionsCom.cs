@@ -13,6 +13,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.Xml;
 using System.Reflection;
+using System.Threading;
 
 
 
@@ -21,7 +22,7 @@ namespace Song.ServiceImpls
     public class QuestionsCom : IQuestions
     {
          
-        #region IQuestions 成员
+        #region 试题管理
 
         public int QuesAdd(Questions entity)
         {
@@ -33,7 +34,7 @@ namespace Song.ServiceImpls
             Song.Entities.Organization org = Business.Do<IOrganization>().OrganCurrent();
             if (org != null) entity.Org_ID = org.Org_ID;  
             Gateway.Default.Save<Questions>(entity);
-            this.Save(this, EventArgs.Empty);
+            this.OnAdd(entity, EventArgs.Empty);
             return entity.Qus_ID;
         }
         
@@ -60,7 +61,7 @@ namespace Song.ServiceImpls
                     tran.Update<QuesAnswer>(new Field[] { QuesAnswer._.Qus_ID }, new object[] { entity.Qus_ID }, QuesAnswer._.Qus_UID == entity.Qus_UID);
                     tran.Commit();
                     QuestionsMethod.QuestionsCache.Singleton.UpdateSingle(entity);
-                    this.Save(this, EventArgs.Empty);
+                    this.OnSave(entity, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -80,39 +81,20 @@ namespace Song.ServiceImpls
             entity.Qus_Title = _ClearString(entity.Qus_Title);
             entity.Qus_Answer = _ClearString(entity.Qus_Answer);
             entity.Qus_Explain = _ClearString(entity.Qus_Explain);
-            //
-            using (DbTrans tran = Gateway.Default.BeginTrans())
+            //答题选项的处理
+            if (ansItem != null)
             {
-                try
+                for (int i = 0; i < ansItem.Count; i++)
                 {
-                    if (ansItem != null)
-                    {
-                        for (int i = 0; i < ansItem.Count; i++)
-                        {
-                            //添加随机的选择项id
-                            Random rd = new Random((i + 1) * DateTime.Now.Millisecond);
-                            ansItem[i].Ans_ID = rd.Next(1, 1000);
-                            //如果有试题id，则加上，好像也无所谓
-                            if (entity.Qus_ID > 0) ansItem[i].Qus_ID = entity.Qus_ID;
-                        }
-                        entity.Qus_Items = this.AnswerToItems(ansItem.ToArray());
-                    }
-                    tran.Update<QuesAnswer>(new Field[] { QuesAnswer._.Qus_ID }, 
-                        new object[] { entity.Qus_ID }, QuesAnswer._.Qus_UID == entity.Qus_UID);
-                    tran.Save<Questions>(entity);
-                    tran.Commit();
+                    //添加随机的选择项id
+                    Random rd = new Random((i + 1) * DateTime.Now.Millisecond);
+                    ansItem[i].Ans_ID = rd.Next(1, 1000);
+                    //如果有试题id，则加上，好像也无所谓
+                    if (entity.Qus_ID > 0) ansItem[i].Qus_ID = entity.Qus_ID;
                 }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    throw ex;
-
-                }
-                finally
-                {
-                    tran.Close();
-                }
+                entity.Qus_Items = this.AnswerToItems(ansItem.ToArray());
             }
+            Gateway.Default.Save<Questions>(entity);
         }
         public void QuesDelete(int identify)
         {
@@ -146,6 +128,7 @@ namespace Song.ServiceImpls
             {
                 tran.Close();
             }
+            this.OnDelete(entity, null);
         }
         public void QuesDelete(string ids)
         {
@@ -174,11 +157,12 @@ namespace Song.ServiceImpls
                     tran.Close();
                 }
             }
-
+            this.OnDelete(null, null);
         }
         public Questions QuesSingle(int identify)
         {
-            Song.Entities.Questions qus = Gateway.Default.From<Questions>().Where(Questions._.Qus_ID == identify).ToFirst<Questions>();
+            Song.Entities.Questions qus = QuestionsMethod.QuestionsCache.Singleton.GetSingle(identify);
+            if (qus == null) qus = Gateway.Default.From<Questions>().Where(Questions._.Qus_ID == identify).ToFirst<Questions>();
             if (qus == null) return qus;
             if (!string.IsNullOrWhiteSpace(qus.Qus_Title))
             {
@@ -192,7 +176,8 @@ namespace Song.ServiceImpls
         public Questions QuesSingle(string uid)
         {
             if (uid == string.Empty) return null;
-            Song.Entities.Questions qus = Gateway.Default.From<Questions>().Where(Questions._.Qus_UID == uid.Trim() && Questions._.Qus_IsTitle==true).ToFirst<Questions>();
+            Song.Entities.Questions qus = QuestionsMethod.QuestionsCache.Singleton.GetSingle(uid);
+            if (qus == null) qus = Gateway.Default.From<Questions>().Where(Questions._.Qus_UID == uid.Trim() && Questions._.Qus_IsTitle == true).ToFirst<Questions>();
             if (qus == null) return qus;
             qus.Qus_Title = qus.Qus_Title.Replace("&lt;", "<");
             qus.Qus_Title = qus.Qus_Title.Replace("&gt;", ">");
@@ -1233,6 +1218,7 @@ namespace Song.ServiceImpls
         public Questions[] CacheQuestions(string uid)
         {
             List<Questions> ques= QuestionsMethod.QuestionsCache.Singleton.GetQuestions(uid);
+            ques = ques.OrderByDescending(x => x.Qus_ID).ToList<Questions>();
             if (ques == null) return null;
             return ques.ToArray<Questions>();
         }
@@ -1262,18 +1248,68 @@ namespace Song.ServiceImpls
         public event EventHandler Delete;
         public void OnSave(object sender, EventArgs e)
         {
-            if (Save != null)
-                Save(this, EventArgs.Empty);             
+            if (sender == null)
+            {
+                //取所有试题进缓存
+                new Thread(new ThreadStart(() =>
+                {
+                    Song.Entities.Questions[] ques = Business.Do<IQuestions>().QuesCount(-1, null, -1);
+                    Song.ServiceImpls.QuestionsMethod.QuestionsCache.Singleton.Delete("all");
+                    Song.ServiceImpls.QuestionsMethod.QuestionsCache.Singleton.Add(ques, int.MaxValue, "all");
+                })).Start();
+            }
+            else
+            {
+                //单个试题的缓存刷新
+                if (!(sender is Questions)) return;
+                Questions ques = (Questions)sender;
+                if (ques == null) return;
+                Song.ServiceImpls.QuestionsMethod.QuestionsCache.Singleton.UpdateSingle(ques);
+            }
+            if (Save != null) Save(sender, e);
         }
         public void OnAdd(object sender, EventArgs e)
         {
-            if (Add != null)
-                Add(this, EventArgs.Empty);           
+            this.OnSave(null, e);
+            //更新章节试题数量
+            if (!(sender is Questions)) return;
+            Questions ques = (Questions)sender;
+            if (ques == null) return;
+            if (ques.Ol_ID > 0)
+            {
+                int count = Business.Do<IOutline>().QuesOfCount(ques.Ol_ID, -1, true, true);
+                Outline ol = Business.Do<IOutline>().OutlineSingle(ques.Ol_ID);
+                Outline olnew = Gateway.Default.From<Outline>().Where(Outline._.Ol_ID == ques.Ol_ID).ToFirst<Outline>();
+                olnew.Ol_QuesCount = count;
+                Gateway.Default.Save<Outline>(olnew);
+                WeiSha.Common.Cache<Song.Entities.Outline>.Data.Update(ol, olnew);
+            }
+            if (Add != null) Add(sender, e);
         }
         public void OnDelete(object sender, EventArgs e)
         {
-            if (Delete != null)
-                Delete(this, EventArgs.Empty);
+            this.OnSave(null, e);
+            if (sender == null)
+            {
+                Business.Do<IOutline>().OutlineBuildCache();
+            }
+            else
+            {
+                //更新章节试题数量
+                if (!(sender is Questions)) return;
+                Questions ques = (Questions)sender;
+                if (ques == null) return;
+                if (ques.Ol_ID > 0)
+                {
+                    int count = Business.Do<IOutline>().QuesOfCount(ques.Ol_ID, -1, true, true);
+                    Outline ol = Business.Do<IOutline>().OutlineSingle(ques.Ol_ID);
+                    Outline olnew = Gateway.Default.From<Outline>().Where(Outline._.Ol_ID == ques.Ol_ID).ToFirst<Outline>();
+                    olnew.Ol_QuesCount = count;
+                    Gateway.Default.Save<Outline>(olnew);
+                    WeiSha.Common.Cache<Song.Entities.Outline>.Data.Update(ol, olnew);
+                }
+            }
+            if (Delete != null) Delete(sender, e);
         }
         #endregion
     }

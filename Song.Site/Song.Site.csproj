@@ -204,7 +204,6 @@
     <Content Include="Manage\Admin\Departs_Edit.aspx" />
     <Content Include="Manage\Admin\Scripts\Student_Export.js" />
     <Content Include="Manage\Admin\Scripts\Setup_Stamp.js" />
-    <Content Include="Manage\Admin\Students_Details.aspx" />
     <Content Include="Manage\Admin\Student_Export.aspx" />
     <Content Include="Manage\Admin\Navigation.aspx" />
     <Content Include="Manage\Admin\Navigation_Edit.aspx" />
@@ -219,7 +218,6 @@
     <Content Include="Manage\Admin\Styles\Navigation_Edit.css" />
     <Content Include="Manage\Admin\ShowPicture.aspx" />
     <Content Include="Manage\Admin\ShowPicture_Edit.aspx" />
-    <Content Include="Manage\Admin\Styles\Students_Details.css" />
     <Content Include="Manage\Admin\Styles\Student_Export.css" />
     <Content Include="Manage\Admin\Students_Point.aspx" />
     <Content Include="Manage\Admin\Setup_Accounts.aspx" />
@@ -228,6 +226,19 @@
     <Content Include="Manage\Admin\Styles\Setup_Accounts.css" />
     <Content Include="Manage\Admin\Setup_Qrcode.aspx" />
     <Content Include="Manage\Admin\Styles\Setup_Stamp.css" />
+    <Content Include="Manage\Card\Learningcard.aspx" />
+    <Content Include="Manage\Card\Learningcard_Edit.aspx" />
+    <Content Include="Manage\Card\Learningcard_Code.aspx" />
+    <Content Include="Manage\Card\Output_Excel.aspx" />
+    <Content Include="Manage\Card\Scripts\Learningcard_Edit.js" />
+    <Content Include="Manage\Card\Scripts\Learningcard_Courses.js" />
+    <Content Include="Manage\Card\Scripts\Learningcard_Code.js" />
+    <Content Include="Manage\Card\Styles\Learningcard_Edit.css" />
+    <Content Include="Manage\Card\Learningcard_Courses.aspx" />
+    <Content Include="Manage\Card\Styles\Learningcard_Courses.css" />
+    <Content Include="Manage\Card\Styles\Learningcard_Code.css" />
+    <Content Include="Manage\Card\Output_Qrcode.aspx" />
+    <Content Include="Manage\Card\Styles\Output_Qrcode.css" />
     <Content Include="Manage\CoreScripts\AutoLoyout.js" />
     <Content Include="Manage\CoreScripts\clipboard.min.js" />
     <Content Include="Manage\CoreScripts\Extend.js" />
@@ -281,6 +292,7 @@
     <Content Include="Manage\Course\Courses_Questions.aspx" />
     <Content Include="Manage\Course\Styles\Courses_Questions.css" />
     <Content Include="Manage\DataTemplate\Config\充值码.xml" />
+    <Content Include="Manage\DataTemplate\Config\学习卡.xml" />
     <Content Include="Manage\DataTemplate\Config\教师信息.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -306,14 +318,18 @@
     <Content Include="Manage\Images\mmicons.png" />
     <Content Include="Manage\Images\search.JPG" />
     <Content Include="Manage\Images\sun_star.gif" />
+    <Content Include="Manage\Images\used.png" />
     <Content Include="Manage\Money\Details.aspx" />
     <Content Include="Manage\Money\Details_View.aspx" />
+    <Content Include="Manage\Money\Output_Qrcode.aspx" />
     <Content Include="Manage\Money\RechargeCode_Output.aspx" />
     <Content Include="Manage\Money\RechargeSet.aspx" />
     <Content Include="Manage\Money\RechargeSet_Code.aspx" />
     <Content Include="Manage\Money\RechargeSet_Edit.aspx" />
+    <Content Include="Manage\Money\Scripts\RechargeSet_Code.js" />
     <Content Include="Manage\Money\Styles\Details.css" />
     <Content Include="Manage\Money\Styles\Details_View.css" />
+    <Content Include="Manage\Money\Styles\Output_Qrcode.css" />
     <Content Include="Manage\Money\Styles\RechargeSet_Code.css" />
     <Content Include="Manage\Panel\Dir.aspx" />
     <Content Include="Manage\Panel\Styles\Authorization.css" />
@@ -351,6 +367,7 @@
     <Content Include="Manage\SMS\SMSSetup_Edit.aspx" />
     <Content Include="Manage\SMS\Styles\SMSSetup.css" />
     <Content Include="Manage\SMS\SMSSetup_Msg.aspx" />
+    <Content Include="Manage\Student\Learningcard.aspx" />
     <Content Include="Manage\Student\MoneyRecharge.aspx" />
     <Content Include="Manage\Student\Online.aspx" />
     <Content Include="Manage\Admin\Scripts\Students.js" />
@@ -362,6 +379,7 @@
     <Content Include="Manage\Student\Notice_View.aspx" />
     <Content Include="Manage\Student\Safe.aspx" />
     <Content Include="Manage\Student\Scripts\Course.js" />
+    <Content Include="Manage\Student\Scripts\LearningCard.js" />
     <Content Include="Manage\Student\Scripts\Moneyrecharge.js" />
     <Content Include="Manage\Student\Scripts\Course_Expire.js" />
     <Content Include="Manage\Admin\Students_Coupon.aspx" />
@@ -374,6 +392,7 @@
     <Content Include="Manage\Student\Scripts\Course_Curr.js" />
     <Content Include="Manage\Student\Scripts\StudyLog.js" />
     <Content Include="Manage\Student\SelfCourse.aspx" />
+    <Content Include="Manage\Student\Students_Details.aspx" />
     <Content Include="Manage\Student\Styles\Course.css" />
     <Content Include="Manage\Student\Styles\MoneyDetails.css" />
     <Content Include="Manage\Student\Styles\Course_Expire.css" />
@@ -388,6 +407,7 @@
     <Content Include="Manage\Admin\Styles\Students.css" />
     <Content Include="Manage\Student\MoneyDetails.aspx" />
     <Content Include="Manage\Student\Styles\MoneyRecharge.css" />
+    <Content Include="Manage\Student\Styles\Students_Details.css" />
     <Content Include="Manage\Student\Styles\Subordinates.css" />
     <Content Include="Manage\Student\Styles\Share.css" />
     <Content Include="Manage\Student\Styles\CouponDetails.css" />
@@ -395,6 +415,8 @@
     <Content Include="Manage\Student\Styles\CouponExchange.css" />
     <Content Include="Manage\Student\Styles\Course_Study.css" />
     <Content Include="Manage\Student\Styles\Course_Curr.css" />
+    <Content Include="Manage\Student\Styles\Learningcard.css" />
+    <Content Include="Manage\Student\Styles\LearningCardView.css" />
     <Content Include="Manage\Student\Subordinates.aspx" />
     <Content Include="Manage\Student\Share.aspx" />
     <Content Include="Manage\Student\PointDetails.aspx" />
@@ -405,6 +427,7 @@
     <Content Include="Manage\Student\Course_Curr.aspx" />
     <Content Include="Manage\Student\Course_Study.aspx" />
     <Content Include="Manage\Student\Course_Expire.aspx" />
+    <Content Include="Manage\Student\LearningCardView.aspx" />
     <Content Include="Manage\Styles\Jme.css" />
     <Content Include="Manage\Sys\LimitDomain.aspx" />
     <Content Include="Manage\Sys\LimitDomain_Edit.aspx" />
@@ -602,7 +625,10 @@
     <Content Include="Templates\Mobi\Default\APICloud\dataSource.js" />
     <Content Include="Templates\Mobi\Default\Article.htm" />
     <Content Include="Templates\Mobi\Default\CallPhone.htm" />
-    <Content Include="Templates\Mobi\Default\Collects.htm" />
+    <Content Include="Templates\Mobi\Default\Images\cou_nophoto.jpg" />
+    <Content Include="Templates\Mobi\Default\Images\percent.gif" />
+    <Content Include="Templates\Mobi\Default\Images\view-pattern.png" />
+    <Content Include="Templates\Mobi\Default\QuesCollects.htm" />
     <Content Include="Templates\Mobi\Default\Conn.htm" />
     <Content Include="Templates\Mobi\Default\CoreScripts\ajaxfileupload.js" />
     <Content Include="Templates\Mobi\Default\CoreScripts\AutoLoyout.js" />
@@ -650,14 +676,17 @@
     <Content Include="Templates\Mobi\Default\Images\btnBack.jpg" />
     <Content Include="Templates\Mobi\Default\Images\cou-nophoto.png" />
     <Content Include="Templates\Mobi\Default\Images\line.jpg" />
+    <Content Include="Templates\Mobi\Default\Images\load_015.gif" />
     <Content Include="Templates\Mobi\Default\Images\load_016.gif" />
     <Content Include="Templates\Mobi\Default\Images\load_024.gif" />
     <Content Include="Templates\Mobi\Default\Images\news-ico.png" />
+    <Content Include="Templates\Mobi\Default\Images\nophoto.gif" />
     <Content Include="Templates\Mobi\Default\Images\nophoto.jpg" />
     <Content Include="Templates\Mobi\Default\Images\ok.gif" />
     <Content Include="Templates\Mobi\Default\Images\ok1.png" />
     <Content Include="Templates\Mobi\Default\Images\ok2.gif" />
     <Content Include="Templates\Mobi\Default\Images\QQ-weixin.png" />
+    <Content Include="Templates\Mobi\Default\Images\qrcode.png" />
     <Content Include="Templates\Mobi\Default\Images\sun_star.gif" />
     <Content Include="Templates\Mobi\Default\Images\testpaper.jpg" />
     <Content Include="Templates\Mobi\Default\Images\tk_exam.png" />
@@ -673,23 +702,21 @@
     <Content Include="Templates\Mobi\Default\MyTeacher.htm" />
     <Content Include="Templates\Mobi\Default\News.htm" />
     <Content Include="Templates\Mobi\Default\NewsList.htm" />
-    <Content Include="Templates\Mobi\Default\Notes.htm" />
+    <Content Include="Templates\Mobi\Default\QuesNotes.htm" />
     <Content Include="Templates\Mobi\Default\Notfound.htm" />
     <Content Include="Templates\Mobi\Default\QuesAnswer.htm" />
     <Content Include="Templates\Mobi\Default\QuesError.htm" />
-    <Content Include="Templates\Mobi\Default\QuesErrorReview.htm" />
     <Content Include="Templates\Mobi\Default\QuesExercises.htm" />
     <Content Include="Templates\Mobi\Default\QuesExplain.htm" />
     <Content Include="Templates\Mobi\Default\QuesNoteAdd.htm" />
     <Content Include="Templates\Mobi\Default\QuesOutlines.htm" />
     <Content Include="Templates\Mobi\Default\QuesPager.htm" />
     <Content Include="Templates\Mobi\Default\QuesSubmitError.htm" />
-    <Content Include="Templates\Mobi\Default\Questions.htm" />
     <Content Include="Templates\Mobi\Default\Recharge.htm" />
     <Content Include="Templates\Mobi\Default\Register.htm" />
     <Content Include="Templates\Mobi\Default\RegisterAgreement.htm" />
     <Content Include="Templates\Mobi\Default\Scripts\Article.js" />
-    <Content Include="Templates\Mobi\Default\Scripts\Collects.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\QuesCollects.js" />
     <Content Include="Templates\Mobi\Default\Scripts\Course.js" />
     <Content Include="Templates\Mobi\Default\Scripts\CourseBuy.js" />
     <Content Include="Templates\Mobi\Default\Scripts\Courses.js" />
@@ -707,13 +734,11 @@
     <Content Include="Templates\Mobi\Default\Scripts\MyTeacher.js" />
     <Content Include="Templates\Mobi\Default\Scripts\News.js" />
     <Content Include="Templates\Mobi\Default\Scripts\NewsList.js" />
-    <Content Include="Templates\Mobi\Default\Scripts\Notes.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\QuesNotes.js" />
     <Content Include="Templates\Mobi\Default\Scripts\QuesError.js" />
-    <Content Include="Templates\Mobi\Default\Scripts\QuesErrorReview.js" />
     <Content Include="Templates\Mobi\Default\Scripts\QuesExercises.js" />
     <Content Include="Templates\Mobi\Default\Scripts\QuesExercisesEvent.js" />
     <Content Include="Templates\Mobi\Default\Scripts\QuesOutlines.js" />
-    <Content Include="Templates\Mobi\Default\Scripts\Questions.js" />
     <Content Include="Templates\Mobi\Default\Scripts\Recharge.js" />
     <Content Include="Templates\Mobi\Default\Scripts\Register.js" />
     <Content Include="Templates\Mobi\Default\Scripts\SelfCourse.js" />
@@ -738,6 +763,10 @@
     <Content Include="Templates\Mobi\Default\Scripts\CoursePage.js" />
     <Content Include="Templates\Mobi\Default\Scripts\CouponExchange.js" />
     <Content Include="Templates\Mobi\Default\Scripts\PointDetails.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\LearningCard.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\LearningCardView.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\QuesExercisesState.js" />
+    <Content Include="Templates\Mobi\Default\Scripts\QuesOften.js" />
     <Content Include="Templates\Mobi\Default\SelfCourse.htm" />
     <Content Include="Templates\Mobi\Default\SelfInfo.htm" />
     <Content Include="Templates\Mobi\Default\SelfPw.htm" />
@@ -746,7 +775,7 @@
     <Content Include="Templates\Mobi\Default\Students.htm" />
     <Content Include="Templates\Mobi\Default\Styles\About.css" />
     <Content Include="Templates\Mobi\Default\Styles\Article.css" />
-    <Content Include="Templates\Mobi\Default\Styles\Collects.css" />
+    <Content Include="Templates\Mobi\Default\Styles\QuesCollects.css" />
     <Content Include="Templates\Mobi\Default\Styles\Conn.css" />
     <Content Include="Templates\Mobi\Default\Styles\Course.css" />
     <Content Include="Templates\Mobi\Default\Styles\CourseBuy.css" />
@@ -766,18 +795,16 @@
     <Content Include="Templates\Mobi\Default\Styles\MyTeacher.css" />
     <Content Include="Templates\Mobi\Default\Styles\News.css" />
     <Content Include="Templates\Mobi\Default\Styles\NewsList.css" />
-    <Content Include="Templates\Mobi\Default\Styles\Notes.css" />
+    <Content Include="Templates\Mobi\Default\Styles\QuesNotes.css" />
     <Content Include="Templates\Mobi\Default\Styles\Notfound.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesAnswer.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesError.css" />
-    <Content Include="Templates\Mobi\Default\Styles\QuesErrorReview.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesExercises.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesExplain.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesNoteAdd.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesOutlines.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesPager.css" />
     <Content Include="Templates\Mobi\Default\Styles\QuesSubmitError.css" />
-    <Content Include="Templates\Mobi\Default\Styles\Questions.css" />
     <Content Include="Templates\Mobi\Default\Styles\Recharge.css" />
     <Content Include="Templates\Mobi\Default\Styles\Register.css" />
     <Content Include="Templates\Mobi\Default\Styles\SelfCourse.css" />
@@ -801,6 +828,9 @@
     <Content Include="Templates\Mobi\Default\Styles\CoursePage.css" />
     <Content Include="Templates\Mobi\Default\Styles\CouponExchange.css" />
     <Content Include="Templates\Mobi\Default\Styles\PointDetails.css" />
+    <Content Include="Templates\Mobi\Default\Styles\LearningCard.css" />
+    <Content Include="Templates\Mobi\Default\Styles\LearningCardView.css" />
+    <Content Include="Templates\Mobi\Default\Styles\QuesOften.css" />
     <Content Include="Templates\Mobi\Default\Subordinates.htm" />
     <Content Include="Templates\Mobi\Default\Swipe.htm" />
     <Content Include="Templates\Mobi\Default\Teacher.htm" />
@@ -818,6 +848,9 @@
     <Content Include="Templates\Mobi\Default\CoursePage.htm" />
     <Content Include="Templates\Mobi\Default\CouponExchange.htm" />
     <Content Include="Templates\Mobi\Default\PointDetails.htm" />
+    <Content Include="Templates\Mobi\Default\LearningCard.htm" />
+    <Content Include="Templates\Mobi\Default\LearningCardView.htm" />
+    <Content Include="Templates\Mobi\Default\QuesOften.htm" />
     <Content Include="Templates\Mobi\_Public\Images\01_qq_logo.png" />
     <Content Include="Templates\Mobi\_Public\Images\load_023.gif" />
     <Content Include="Templates\Mobi\_Public\Images\load_027.gif" />
@@ -831,6 +864,7 @@
     <Content Include="Templates\Mobi\_Public\Styles\WeixinpubLogin.css" />
     <Content Include="Templates\Mobi\_Public\WeixinpubLogin.htm" />
     <Content Include="Templates\Mobi\_Public\_self.xml" />
+    <Content Include="Templates\Mobi\_Public\OnlyWeixin.htm" />
     <Content Include="Templates\Web\Gov\Conn.htm" />
     <Content Include="Templates\Web\Gov\CourseChannel.htm" />
     <Content Include="Templates\Web\Gov\Images\Flvplayer.swf" />
@@ -2192,13 +2226,6 @@
     <Compile Include="Manage\Admin\Departs_Edit.aspx.designer.cs">
       <DependentUpon>Departs_Edit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Manage\Admin\Students_Details.aspx.cs">
-      <DependentUpon>Students_Details.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Manage\Admin\Students_Details.aspx.designer.cs">
-      <DependentUpon>Students_Details.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Manage\Admin\Student_Export.aspx.cs">
       <DependentUpon>Student_Export.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2290,6 +2317,48 @@
     <Compile Include="Manage\Admin\Setup_Qrcode.aspx.designer.cs">
       <DependentUpon>Setup_Qrcode.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Manage\Card\Learningcard.aspx.cs">
+      <DependentUpon>Learningcard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard.aspx.designer.cs">
+      <DependentUpon>Learningcard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Edit.aspx.cs">
+      <DependentUpon>Learningcard_Edit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Edit.aspx.designer.cs">
+      <DependentUpon>Learningcard_Edit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Courses.aspx.cs">
+      <DependentUpon>Learningcard_Courses.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Courses.aspx.designer.cs">
+      <DependentUpon>Learningcard_Courses.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Code.aspx.cs">
+      <DependentUpon>Learningcard_Code.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Learningcard_Code.aspx.designer.cs">
+      <DependentUpon>Learningcard_Code.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Card\Output_Excel.aspx.cs">
+      <DependentUpon>Output_Excel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Output_Excel.aspx.designer.cs">
+      <DependentUpon>Output_Excel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Card\Output_Qrcode.aspx.cs">
+      <DependentUpon>Output_Qrcode.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Card\Output_Qrcode.aspx.designer.cs">
+      <DependentUpon>Output_Qrcode.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Manage\Course\Courses_TestPaper.aspx.cs">
       <DependentUpon>Courses_TestPaper.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2345,6 +2414,13 @@
     </Compile>
     <Compile Include="Manage\Money\Details_View.aspx.designer.cs">
       <DependentUpon>Details_View.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Money\Output_Qrcode.aspx.cs">
+      <DependentUpon>Output_Qrcode.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Money\Output_Qrcode.aspx.designer.cs">
+      <DependentUpon>Output_Qrcode.aspx</DependentUpon>
     </Compile>
     <Compile Include="Manage\Money\RechargeCode_Output.aspx.cs">
       <DependentUpon>RechargeCode_Output.aspx</DependentUpon>
@@ -2479,6 +2555,13 @@
     <Compile Include="Manage\SMS\SMSSetup_Msg.aspx.designer.cs">
       <DependentUpon>SMSSetup_Msg.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Manage\Student\Learningcard.aspx.cs">
+      <DependentUpon>Learningcard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Student\Learningcard.aspx.designer.cs">
+      <DependentUpon>Learningcard.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Manage\Student\Parents.Master.cs">
       <DependentUpon>Parents.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2506,6 +2589,13 @@
     </Compile>
     <Compile Include="Manage\Admin\Students_Coupon.aspx.designer.cs">
       <DependentUpon>Students_Coupon.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Student\Students_Details.aspx.cs">
+      <DependentUpon>Students_Details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Student\Students_Details.aspx.designer.cs">
+      <DependentUpon>Students_Details.aspx</DependentUpon>
     </Compile>
     <Compile Include="Manage\Student\StudyLog.aspx.cs">
       <DependentUpon>StudyLog.aspx</DependentUpon>
@@ -2597,6 +2687,13 @@
     </Compile>
     <Compile Include="Manage\Student\Course_Expire.aspx.designer.cs">
       <DependentUpon>Course_Expire.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Student\LearningCardView.aspx.cs">
+      <DependentUpon>LearningCardView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\Student\LearningCardView.aspx.designer.cs">
+      <DependentUpon>LearningCardView.aspx</DependentUpon>
     </Compile>
     <Compile Include="Manage\Sys\Accounts.aspx.cs">
       <DependentUpon>Accounts.aspx</DependentUpon>
@@ -2783,8 +2880,8 @@
     <Compile Include="Ajax\CourseBuySubmit.ashx.cs">
       <DependentUpon>CourseBuySubmit.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Mobile\Collects.ashx.cs">
-      <DependentUpon>Collects.ashx</DependentUpon>
+    <Compile Include="Mobile\QuesCollects.ashx.cs">
+      <DependentUpon>QuesCollects.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Mobile\Course.ashx.cs">
@@ -2801,10 +2898,6 @@
     </Compile>
     <Compile Include="Mobile\QuesError.ashx.cs">
       <DependentUpon>QuesError.ashx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Mobile\QuesErrorReview.ashx.cs">
-      <DependentUpon>QuesErrorReview.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Mobile\QuesExplain.ashx.cs">
@@ -2852,8 +2945,8 @@
       <DependentUpon>News.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Mobile\Notes.ashx.cs">
-      <DependentUpon>Notes.ashx</DependentUpon>
+    <Compile Include="Mobile\QuesNotes.ashx.cs">
+      <DependentUpon>QuesNotes.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Mobile\Notice.ashx.cs">
@@ -2870,10 +2963,6 @@
     </Compile>
     <Compile Include="Mobile\QuesAnswer.ashx.cs">
       <DependentUpon>QuesAnswer.ashx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Mobile\Questions.ashx.cs">
-      <DependentUpon>Questions.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Mobile\Register.ashx.cs">
@@ -2982,6 +3071,18 @@
     </Compile>
     <Compile Include="Mobile\CoursePage.ashx.cs">
       <DependentUpon>CoursePage.ashx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\LearningCard.ashx.cs">
+      <DependentUpon>LearningCard.ashx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\LearningCardView.ashx.cs">
+      <DependentUpon>LearningCardView.ashx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\QuesOften.ashx.cs">
+      <DependentUpon>QuesOften.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="NewsList.ashx.cs">
@@ -5302,7 +5403,7 @@
     <Content Include="Manage\Site\Links\LinksSort.aspx" />
     <Content Include="Manage\Site\Links\LinksSort_Edit.aspx" />
     <Content Include="Manage\Site\Links\Scripts\LinksInfo_Edit.js" />
-    <Content Include="Manage\Site\Links\Style\LinksInfo_Edit.css" />
+    <Content Include="Manage\Site\Links\Styles\LinksInfo_Edit.css" />
     <Content Include="Manage\Site\MessageBoard.aspx" />
     <Content Include="Manage\Site\MessageBoard_Ans.aspx" />
     <Content Include="Manage\Site\Notice.aspx" />
@@ -5339,7 +5440,7 @@
     <Content Include="Manage\Panel\Scripts\Loyout.js" />
     <Content Include="Manage\Panel\Scripts\PagePanel.js" />
     <Content Include="Manage\Panel\Scripts\TreePanel.js" />
-    <Content Include="Manage\Panel\Scripts\PageBox.js" />
+    <Content Include="Manage\Panel\Scripts\PageBox_.js" />
     <Content Include="Manage\SOAP\ManageMenu.asmx" />
     <Content Include="Manage\Styles\Index.css" />
     <Content Include="Manage\Sys\DataBaseBackup.aspx" />
@@ -5677,7 +5778,7 @@
     <Content Include="Manage\Images\sanjiao.jpg" />
     <Content Include="Manage\Images\w.gif" />
     <Content Include="Manage\Site\Links\LinksApply.aspx" />
-    <Content Include="Manage\Site\Links\Style\LinksApply.css" />
+    <Content Include="Manage\Site\Links\Styles\LinksApply.css" />
     <Content Include="Manage\Site\Scripts\Navigation_Edit.js" />
     <Content Include="Manage\Site\Styles\SiteInfo.css" />
     <Content Include="Manage\Site\InternalLink.aspx" />
@@ -5999,12 +6100,11 @@
     <Content Include="Mobile\Article.ashx" />
     <Content Include="Mobile\CourseBuy.ashx" />
     <Content Include="Ajax\CourseBuySubmit.ashx" />
-    <Content Include="Mobile\Collects.ashx" />
+    <Content Include="Mobile\QuesCollects.ashx" />
     <Content Include="Mobile\Course.ashx" />
     <Content Include="Mobile\Courses.ashx" />
     <Content Include="Mobile\Default.ashx" />
     <Content Include="Mobile\QuesError.ashx" />
-    <Content Include="Mobile\QuesErrorReview.ashx" />
     <Content Include="Mobile\QuesExplain.ashx" />
     <Content Include="Mobile\Guide.ashx" />
     <Content Include="Mobile\Guides.ashx" />
@@ -6014,11 +6114,10 @@
     <Content Include="Mobile\MoneyDetails.ashx" />
     <Content Include="Mobile\Recharge.ashx" />
     <Content Include="Mobile\News.ashx" />
-    <Content Include="Mobile\Notes.ashx" />
+    <Content Include="Mobile\QuesNotes.ashx" />
     <Content Include="Mobile\Notice.ashx" />
     <Content Include="Mobile\Notices.ashx" />
     <Content Include="Mobile\QuesAnswer.ashx" />
-    <Content Include="Mobile\Questions.ashx" />
     <Content Include="Mobile\Register.ashx" />
     <Content Include="Mobile\SelfCourse.ashx" />
     <Content Include="Mobile\SelfInfo.ashx" />
@@ -6074,6 +6173,9 @@
     <Content Include="Ajax\LogForStudentQuestions.ashx" />
     <Content Include="Mobile\CouponExchange.ashx" />
     <Content Include="Mobile\PointDetails.ashx" />
+    <Content Include="Mobile\LearningCard.ashx" />
+    <Content Include="Mobile\LearningCardView.ashx" />
+    <Content Include="Mobile\QuesOften.ashx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -6438,7 +6540,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="Manage\Money\Scripts\" />
     <Folder Include="Manage\Utility\kindeditor\attached\" />
     <Folder Include="Upload\" />
     <Folder Include="Utility\Images\Mobi\" />

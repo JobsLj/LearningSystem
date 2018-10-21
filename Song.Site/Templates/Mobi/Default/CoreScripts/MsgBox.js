@@ -23,9 +23,11 @@
         this.Init(title, info, width, height, type);
     }
     msgbox.prototype.WinBox = null; //窗体Jquery对象
-    msgbox.prototype.EnterEvent = null; //确认按钮的事件    
+    msgbox.prototype.EnterEvent = null; //确认按钮的事件  
+    msgbox.prototype.CancelEvent = null;    //结束后的事件    
     msgbox.prototype.OverEvent = null;    //结束后的事件    
     msgbox.prototype.ShowCloseBtn = true;   //是否显示右上角关闭按钮
+    msgbox.prototype.btn = { enter: "确定", cancel: "关闭" };
     //初始化参数
     msgbox.prototype.Init = function (title, info, width, height, type) {
         this.Title = title != null && title != "" ? title : "";
@@ -60,6 +62,20 @@
             }, 1000);
         }
     }
+    //关闭当前窗口
+    msgbox.prototype.Close = function (winid) {
+        //关闭窗口的方法       
+        var func = MsgBox.events.get(winid + "_OverEvent");
+        if (func != null) func();
+        //关闭窗口
+        var msgbox = $(".MsgBox[winid='" + this.WinId + "']");
+        msgbox.fadeOut(1000, function () {
+            $("#msgMask").remove();
+        });
+        msgbox.fadeOut(1000, function () {
+            $(this).remove();
+        });
+    }
     //生成窗体外框,包括标题
     msgbox.prototype.BuildFrame = function () {
         var hg = $(window).height();
@@ -71,11 +87,13 @@
         if (this.OverEvent != null) msgbox.events.add(this.WinId + "_OverEvent", this.OverEvent);
         //确定事件
         if (this.EnterEvent != null) msgbox.events.add(this.WinId + "_EnterEvent", this.EnterEvent);
+        //取消事件
+        if (this.CancelEvent != null) msgbox.events.add(this.WinId + "_CancelEvent", this.CancelEvent);
         //设置窗口的位置
         box.css("top", (hg - this.Height) / 2 + $(window).scrollTop());
         box.css("left", (wd - this.Width) / 2);
         box.css("position", "absolute").css("z-index", "10001");
-        box.css({ "width": this.Width - 20, "height": this.Height - 20 });
+        box.css({ "width": this.Width, "height": this.Height });
         box.attr("width", box.width()).attr("height", box.height());
         this.BuildTitle();
     }
@@ -94,9 +112,9 @@
         var context = this.WinBox.find(".MsgBoxContext");
         context.width(this.WinBox.width() - 20);
         if (this.Type == "null") {
-            context.height(box.height() - box.find(".MsgBoxTitle").height() - 20);
+            context.height(box.height() - box.find(".MsgBoxTitle").height());
         } else {
-            context.height(box.height() - box.find(".MsgBoxTitle").height() - 50 - 20);
+            context.height(box.height() - box.find(".MsgBoxTitle").height() - 50);
         }
     }
     //生成页面区域
@@ -114,15 +132,9 @@
         if (this.Type == "null") return;
         this.WinBox.append("<div class='msgBtnBox' style='height:50px'></div>");
         var box = this.WinBox.find(".msgBtnBox");
-        box.width(this.WinBox.width());
-        if (this.Type == "msg" || this.Type == "alert" || this.Type == "confirm") {
-            box.append("<div class='msgBtnClose msgbtn'>关闭</div>");
-            box.find(".msgBtnClose").click(function () {
-                msgbox.CloseEvent($(this));
-            });
-        }
+        box.width(this.WinBox.width());       
         if (this.Type == "confirm") {
-            box.append("<div class='msgBtnEnter msgbtn'>确定</div>");
+            box.append("<div class='msgBtnEnter msgbtn'>" + this.btn.enter + "</div>");
             if (this.EnterEvent != null) {
                 box.find(".msgBtnEnter").click(function () {
                     var winid = $(this).parents(".MsgBox").attr("winid");
@@ -131,6 +143,15 @@
                 });
             }
         }
+        if (this.Type == "msg" || this.Type == "alert" || this.Type == "confirm") {
+            box.append("<div class='msgBtnClose msgbtn'>" + this.btn.cancel + "</div>");
+            box.find(".msgBtnClose").click(function () {
+                var winid = $(this).parents(".MsgBox").attr("winid");
+                var func = msgbox.events.get(winid + "_CancelEvent");
+                if (func != null) func();
+                msgbox.CloseEvent($(this));
+            });
+        }
         if (this.Type == "loading") {
             box.addClass("msgLoading");
         }
@@ -138,10 +159,10 @@
     //关闭窗口
     //isquiet:是否安静，如果为true，则不执行事件
     msgbox.Close = function (isquiet) {
-        $("#msgMask").fadeOut(100, function () {
+        $("#msgMask").fadeOut(1000, function () {
             $("#msgMask").remove();
         });
-        $(".MsgBox").fadeOut(100, function () {
+        $(".MsgBox").fadeOut(1000, function () {
             $(".MsgBox").remove();
         });
         //$("#MsgBox").remove();

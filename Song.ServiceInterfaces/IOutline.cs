@@ -95,6 +95,11 @@ namespace Song.ServiceInterfaces
         /// <param name="identify"></param>
         void OutlineClear(int identify);
         /// <summary>
+        /// 构建缓存
+        /// </summary>
+        /// <returns></returns>
+        List<Outline> OutlineBuildCache();
+        /// <summary>
         /// 获取指定个数的课程列表
         /// </summary>
         /// <param name="couid">所属课程id</param>
@@ -266,6 +271,18 @@ namespace Song.ServiceInterfaces
         /// <param name="oeid"></param>
         /// <returns></returns>
         DataTable EventFeedback(int oeid);
+        #endregion
+
+        #region 事件
+        /// <summary>
+        /// 当章节更改时
+        /// </summary>
+        event EventHandler Save;
+        event EventHandler Add;
+        event EventHandler Delete;
+        void OnSave(object sender, EventArgs e);
+        void OnAdd(object sender, EventArgs e);
+        void OnDelete(object sender, EventArgs e);
         #endregion
     }
 }

@@ -9,9 +9,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Data.OleDb;
-
 using WeiSha.Common;
-
 using Song.ServiceInterfaces;
 using Song.Entities;
 using System.Reflection;
@@ -41,8 +39,7 @@ namespace Song.Site.Manage.Questions
                 try
                 {
                     //将数据逐行导入数据库
-                    _inputData(dt.Rows[i]);
-                    Business.Do<IQuestions>().OnSave(this, EventArgs.Empty);
+                    _inputData(dt.Rows[i]);                   
                 }
                 catch
                 {
@@ -50,6 +47,8 @@ namespace Song.Site.Manage.Questions
                     ExcelInput1.AddError(dt.Rows[i]);
                 }
             }
+            Business.Do<IQuestions>().OnSave(null, EventArgs.Empty);
+            Business.Do<IOutline>().OnSave(null, EventArgs.Empty);
         }
 
         

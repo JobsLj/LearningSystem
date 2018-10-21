@@ -27,18 +27,22 @@ namespace Song.ServiceImpls
         public event EventHandler Delete;
         public void OnSave(object sender, EventArgs e)
         {
-            if (Save != null)
-                Save(this, EventArgs.Empty);
+            if (!(sender is Accounts)) return;
+            Accounts acc = (Accounts)sender;
+            if (acc == null) return;
+            int currid = Extend.LoginState.Accounts.CurrentUserId;
+            if (currid != acc.Ac_ID) return;
+            Extend.LoginState.Accounts.Refresh(currid);
+
+            if (Save != null) Save(sender, e);
         }
         public void OnAdd(object sender, EventArgs e)
         {
-            if (Add != null)
-                Add(this, EventArgs.Empty);
+            if (Add != null) Add(sender, e);
         }
         public void OnDelete(object sender, EventArgs e)
         {
-            if (Delete != null)
-                Delete(this, EventArgs.Empty);
+            if (Delete != null) Delete(sender, e);
         }
         #endregion
         /// <summary>
@@ -120,7 +124,7 @@ namespace Song.ServiceImpls
                         new object[] { entity.Ac_Sex, entity.Ac_Birthday, entity.Ac_IDCardNumber, entity.Ac_Nation, entity.Ac_Native }, Teacher._.Ac_ID == entity.Ac_ID);
                     }
                     tran.Commit();
-                    this.OnSave(this, EventArgs.Empty);
+                    this.OnSave(entity, EventArgs.Empty);
                 }
                 catch
                 {
@@ -167,7 +171,7 @@ namespace Song.ServiceImpls
         public void AccountsUpdate(Accounts entity, Field[] fiels, object[] objs)
         {
             Gateway.Default.Update<Accounts>(fiels, objs, Accounts._.Ac_ID == entity.Ac_ID);
-            this.OnSave(this, EventArgs.Empty);
+            this.OnSave(entity, EventArgs.Empty);
         }
         /// <summary>
         /// 删除，按主键ID；

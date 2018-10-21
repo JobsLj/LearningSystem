@@ -756,30 +756,46 @@ namespace Song.ServiceImpls
 
         #region 学员在线学习的记录 
         /// <summary>
-        /// 修改登录记，刷新一下登录信息，例如在线时间
+        /// 记录学员学习时间
         /// </summary>
+        /// <param name="couid"></param>
+        /// <param name="olid"></param>
+        /// <param name="st"></param>
+        /// <param name="playTime">播放进度</param>
+        /// <param name="studyInterval">学习时间，此为时间间隔，每次提交学习时间加这个数</param>
+        /// <param name="totalTime">视频总长度</param>
         public void LogForStudyFresh(int couid, int olid, Accounts st, int playTime, int studyInterval, int totalTime)
         {
-            Song.Entities.LogForStudentStudy entity = this.LogForStudySingle(st.Ac_ID, olid);
-            if (entity == null)
-            {
-                entity = new LogForStudentStudy();
-                entity.Lss_UID = WeiSha.Common.Request.UniqueID();
-                entity.Lss_CrtTime = DateTime.Now;
-                entity.Lss_StudyTime = studyInterval;
-            }
-            entity.Cou_ID = couid;
-            entity.Ol_ID = olid;
+            if (st == null) return;
             //当前机构
             Song.Entities.Organization org = Business.Do<IOrganization>().OrganCurrent();
-            if (org != null) entity.Org_ID = org.Org_ID;
-            //学员信息
-            if (st != null)
+            
+            //当前课程的所有章节
+            Song.Entities.Outline[] outs = Business.Do<IOutline>().OutlineCount(couid, -1, true, -1);
+            foreach (Song.Entities.Outline o in outs)
             {
-                entity.Ac_ID = st.Ac_ID;
-                entity.Ac_AccName = st.Ac_AccName;
-                entity.Ac_Name = st.Ac_Name;
+                Song.Entities.LogForStudentStudy log = this.LogForStudySingle(st.Ac_ID, o.Ol_ID);
+                if (log != null) continue;
+                //如果某一章节没有记录，则创建
+                log = new LogForStudentStudy();
+                log.Lss_UID = WeiSha.Common.Request.UniqueID();
+                log.Lss_CrtTime = DateTime.Now;
+                log.Cou_ID = couid;
+                log.Ol_ID = o.Ol_ID;
+                if (org != null) log.Org_ID = org.Org_ID;
+                //学员信息
+                log.Ac_ID = st.Ac_ID;
+                log.Ac_AccName = st.Ac_AccName;
+                log.Ac_Name = st.Ac_Name;
+                //视频长度
+                List<Song.Entities.Accessory> videos = Business.Do<IAccessory>().GetAll(o.Ol_UID, "CourseVideo");
+                if (videos.Count > 0)                
+                    log.Lss_Duration = videos[0].As_Duration;
+                //
+                Gateway.Default.Save<LogForStudentStudy>(log);
             }
+            //当前章节的学习记录
+            Song.Entities.LogForStudentStudy entity = this.LogForStudySingle(st.Ac_ID, olid);
             //登录相关时间
             entity.Lss_LastTime = DateTime.Now;
             entity.Lss_PlayTime = playTime;
@@ -790,7 +806,7 @@ namespace Song.ServiceImpls
             entity.Lss_OS = WeiSha.Common.Browser.OS;
             entity.Lss_Browser = WeiSha.Common.Browser.Name + " " + WeiSha.Common.Browser.Version;
             entity.Lss_Platform = WeiSha.Common.Browser.IsMobile ? "Mobi" : "PC";
-
+            //
             Gateway.Default.Save<LogForStudentStudy>(entity);
         }
         /// <summary>
@@ -880,21 +896,33 @@ namespace Song.ServiceImpls
         public DataTable StudentStudyCourseLog(int orgid, int acid)
         {
             string sql = @"select * from course as c inner join 
-                    (SELECT top 90000 cou_id, MAX(Lss_LastTime) as 'lastTime', sum(Lss_StudyTime) as 'studyTime', 
-                    cast(convert(decimal(18,4),1000* cast(sum(Lss_StudyTime) as float)/MAX(Lss_Duration)) as float)*100 as 'complete'
-                      FROM [LogForStudentStudy] where {orgid} and {acid}
-                    group by cou_id order by lastTime desc) as s
-                    on c.cou_id=s.cou_id ";
+(select cou_id, max(lastTime) as 'lastTime',sum(studyTime) as 'studyTime',sum(case when complete>=100 then 100 else complete end)/COUNT(cou_id) as 'complete' from 
+(SELECT top 90000 ol_id,MAX(cou_id) as 'cou_id', MAX(Lss_LastTime) as 'lastTime', 
+	 sum(Lss_StudyTime) as 'studyTime', MAX(Lss_Duration) as 'totalTime', MAX([Lss_PlayTime]) as 'playTime',
+     (case
+     when max(Lss_Duration)>0 then
+     cast(convert(decimal(18,4),1000* cast(sum(Lss_StudyTime) as float)/sum(Lss_Duration)) as float)*100
+     else     0 end     ) as 'complete'
+
+     FROM [LogForStudentStudy] where {acid} 
+                        group by ol_id ) as s group by s.cou_id) as tm on c.cou_id=tm.cou_id ";
             sql = sql.Replace("{orgid}", orgid > 0 ? "org_id=" + orgid : "1=1");
             sql = sql.Replace("{acid}", acid > 0 ? "ac_id=" + acid : "1=1");
-            DataSet ds = Gateway.Default.FromSql(sql).ToDataSet();
-            return ds.Tables[0];
+            try
+            {
+                DataSet ds = Gateway.Default.FromSql(sql).ToDataSet();
+                return ds.Tables[0];
+            }
+            catch
+            {
+                return null;
+            }
         }
         /// <summary>
-        /// 学员学习章节的记录
+        /// 学员学习某一课程下所有章节的记录
         /// </summary>
-        /// <param name="couid"></param>
-        /// <param name="acid"></param>
+        /// <param name="couid">课程id</param>
+        /// <param name="acid">学员账户id</param>
         /// <returns>datatable中，LastTime：最后学习时间；totalTime：视频时间长；playTime：播放进度；studyTime：学习时间，complete：完成度百分比</returns>
         public DataTable StudentStudyOutlineLog(int couid, int acid)
         {
@@ -903,13 +931,21 @@ namespace Song.ServiceImpls
 	                        sum(Lss_StudyTime) as 'studyTime', MAX(Lss_Duration) as 'totalTime', MAX([Lss_PlayTime]) as 'playTime',
                             cast(convert(decimal(18,4),1000* cast(sum(Lss_StudyTime) as float)/sum(Lss_Duration)) as float)*100 as 'complete'
 
-                          FROM [LogForStudentStudy] where {acid} 
+                          FROM [LogForStudentStudy] where {acid}  and Lss_Duration>0
                         group by ol_id ) as s
                         on c.ol_id=s.ol_id where {couid} order by ol_tax asc";
             sql = sql.Replace("{couid}", "cou_id=" + couid);
             sql = sql.Replace("{acid}", "ac_id=" + acid);
-            DataSet ds = Gateway.Default.FromSql(sql).ToDataSet();
-            return ds.Tables[0];
+            try
+            {
+                DataSet ds = Gateway.Default.FromSql(sql).ToDataSet();
+                //计算学习时度，因为没有学习的章节没有记录，也要计算进去
+                return ds.Tables[0];
+            }
+            catch
+            {
+                return null;
+            }
         }
         #endregion
 
@@ -969,6 +1005,15 @@ namespace Song.ServiceImpls
             Gateway.Default.Delete<Student_Ques>(Student_Ques._.Qus_ID == quesid && Student_Ques._.Ac_ID == acid);
         }
         /// <summary>
+        /// 清空错题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        public void QuesClear(int couid, int stid)
+        {
+            Gateway.Default.Delete<Student_Ques>(Student_Ques._.Cou_ID == couid && Student_Ques._.Ac_ID == stid);
+        }
+        /// <summary>
         /// 获取单一实体对象，按主键ID；
         /// </summary>
         /// <param name="identify">实体的主键</param>
@@ -1014,6 +1059,23 @@ namespace Song.ServiceImpls
                 .Where(wc).OrderBy(Questions._.Qus_CrtTime.Desc).ToArray<Questions>(count);
         }
         /// <summary>
+        /// 高频错题
+        /// </summary>
+        /// <param name="couid">课程ID</param>
+        /// <param name="type">题型</param>
+        /// <param name="count">取多少条</param>
+        /// <returns></returns>
+        public Questions[] QuesOftenwrong(int couid, int type, int count)
+        {
+            string sql = @"select {top} sq.count as Qus_Tax,c.* from Questions as c inner join 
+(SELECT qus_id,COUNT(qus_id) as 'count'  FROM [Student_Ques] where {couid} and {type} group by qus_id) as sq
+on c.qus_id=sq.qus_id order by sq.count desc";
+            sql = sql.Replace("{couid}", couid > 0 ? "cou_id=" + couid : "1=1");
+            sql = sql.Replace("{type}", type > 0 ? "Qus_Type=" + type : "1=1");
+            sql = sql.Replace("{top}", count > 0 ? "top " + count : "");
+            return Gateway.Default.FromSql(sql).ToArray<Questions>();
+        }
+        /// <summary>
         /// 分页获取学员的错误试题
         /// </summary>
         /// <param name="acid">学员id</param>
@@ -1051,6 +1113,8 @@ namespace Song.ServiceImpls
             entity.Qus_Type = qus.Qus_Type;
             entity.Qus_Title = qus.Qus_Title;
             entity.Qus_Diff = qus.Qus_Diff;
+            entity.Cou_ID = qus.Cou_ID;
+            entity.Sbj_ID = qus.Sbj_ID;
             //
             WhereClip wc = Student_Collect._.Qus_ID == entity.Qus_ID && Student_Collect._.Ac_ID == entity.Ac_ID;
             Student_Collect sc = Gateway.Default.From<Student_Collect>().Where(wc).ToFirst<Student_Collect>();
@@ -1090,6 +1154,15 @@ namespace Song.ServiceImpls
         public void CollectDelete(int quesid, int acid)
         {
             Gateway.Default.Delete<Student_Collect>(Student_Collect._.Qus_ID == quesid && Student_Collect._.Ac_ID == acid);
+        }
+        /// <summary>
+        /// 清空错题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        public void CollectClear(int couid, int stid)
+        {
+            Gateway.Default.Delete<Student_Collect>(Student_Collect._.Cou_ID == couid && Student_Collect._.Ac_ID == stid);
         }
         /// <summary>
         /// 获取单一实体对象，按主键ID；
@@ -1184,6 +1257,7 @@ namespace Song.ServiceImpls
             if (qus == null) return;
             entity.Qus_Type = qus.Qus_Type;
             entity.Qus_Title = qus.Qus_Title;
+            entity.Cou_ID = qus.Cou_ID;
             //
             WhereClip wc = Student_Notes._.Qus_ID == entity.Qus_ID && Student_Notes._.Ac_ID == entity.Ac_ID;
             Student_Notes sn = Gateway.Default.From<Student_Notes>().Where(wc).ToFirst<Student_Notes>();
@@ -1228,6 +1302,15 @@ namespace Song.ServiceImpls
             Gateway.Default.Delete<Student_Notes>(Student_Notes._.Qus_ID == quesid && Student_Notes._.Ac_ID == acid);
         }
         /// <summary>
+        /// 清空试题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        public void NotesClear(int couid, int stid)
+        {
+            Gateway.Default.Delete<Student_Notes>(Student_Notes._.Cou_ID == couid && Student_Notes._.Ac_ID == stid);
+        }
+        /// <summary>
         /// 获取单一实体对象，按主键ID；
         /// </summary>
         /// <param name="identify">实体的主键</param>
@@ -1264,20 +1347,38 @@ namespace Song.ServiceImpls
                 .Where(wc).OrderBy(Student_Notes._.Stn_CrtTime.Desc).ToArray<Student_Notes>();
         }
         /// <summary>
+        /// 取当前学员的笔记
+        /// </summary>
+        /// <param name="stid"></param>
+        /// <param name="couid"></param>
+        /// <param name="type"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public Questions[] NotesCount(int stid, int couid, int type, int count)
+        {
+            WhereClip wc = new WhereClip();
+            if (stid > 0) wc.And(Student_Notes._.Ac_ID == stid);          
+            if (couid > 0) wc.And(Student_Notes._.Cou_ID == couid);
+            if (type > 0) wc.And(Student_Notes._.Qus_Type == type);
+            return Gateway.Default.From<Questions>()
+                .InnerJoin<Student_Notes>(Questions._.Qus_ID == Student_Notes._.Qus_ID)
+                .Where(wc).OrderBy(Student_Notes._.Stn_CrtTime.Desc).ToArray<Questions>(count);
+        }
+        /// <summary>
         /// 获取指定个数的对象
         /// </summary>
         /// <param name="acid">学员id</param>
         /// <param name="quesid">试题id</param>
         /// <param name="type">试题类型</param>
         /// <returns></returns>
-        public Student_Notes[] NotesCount(int acid, int quesid, int type, int count)
+        public Questions[] NotesCount(int acid, int type, int count)
         {
             WhereClip wc = new WhereClip();
-            if (acid > 0) wc.And(Student_Notes._.Ac_ID == acid);
-            if (quesid > 0) wc.And(Student_Notes._.Qus_ID == quesid);
+            if (acid > 0) wc.And(Student_Notes._.Ac_ID == acid);           
             if (type > 0) wc.And(Student_Notes._.Qus_Type == type);
-            return Gateway.Default.From<Student_Notes>()
-                .Where(wc).OrderBy(Student_Notes._.Stn_CrtTime.Desc).ToArray<Student_Notes>(count);
+            return Gateway.Default.From<Questions>()
+                .InnerJoin<Student_Notes>(Questions._.Qus_ID == Student_Notes._.Qus_ID)
+                .Where(wc).OrderBy(Student_Notes._.Stn_CrtTime.Desc).ToArray<Questions>(count);
         }
         /// <summary>
         /// 分页获取学员的错误试题

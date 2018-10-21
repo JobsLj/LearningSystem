@@ -40,8 +40,8 @@
         //如果宽高小于100，则默认为浏览器窗口的百分比
         this.Wdper = width > 100 ? width / wd * 100 : width;    //宽度百分比
         this.Hgper = height > 100 ? height / hg * 100 : height;    //宽度百分比
-        this.Width = width > 100 ? Number(width) : wd * Number(width) / 100;
-        this.Height = height > 100 ? Number(height) : hg * Number(height) / 100;
+        this.Width = width > 100 ? Number(width) : Math.floor(wd * Number(width) / 100);
+        this.Height = height > 100 ? Number(height) : Math.floor(hg * Number(height) / 100);
         this.WinId = winid != null ? winid : new Date().getTime() + "_" + Math.floor(Math.random() * 1000 + 1);
         this.Page = pagebox.getCurrPath(patwin, page);
         //上级窗体
@@ -51,6 +51,12 @@
     pagebox.getParent = function (winname) {
         var winbox = $(".PageBox[winid=" + winname + "]", window.top.document);
         return winbox;
+    }
+    //获取当前窗体对象
+    //winname:当前iframe名称
+    pagebox.getPagebox = function (winname) {
+        var box = $(".PageBox[winid=" + winname + "]");
+        return box;
     }
     //获取父窗口的window对象
     //winname:当前窗体的名称
@@ -64,21 +70,29 @@
     }
     //获取父路径
     pagebox.getParentPath = function (winname) {
+        if (winname == null || winname == "") return "";
         var winbox = $(".PageBox[winid=" + winname + "]", window.top.document);
-        if (winbox.size() < 1) winbox = $("iframe[name=" + winname + "]", window.top.document);
-        var iframe = winbox.find("iframe");
+        var iframe = null;
+        if (winbox.size() > 0) {
+            iframe = winbox.find("iframe");            
+        } else {
+            iframe = $("iframe[name=" + winname + "]");
+        }
         var path = "";
         if (iframe.size() > 0) {
             path = iframe.get(0).contentWindow.location.href;
         } else {
             path = window.top.location.href;
         }
+        path = path.indexOf("?") ? path.substring(0, path.lastIndexOf("?") + 1) : "";
         path = path.indexOf("/") ? path.substring(0, path.lastIndexOf("/") + 1) : "";
         return path;
     }
     //获取当前要打开的路径
     pagebox.getCurrPath = function (winname, page) {
+        if (winname == null || winname == "") return page;
         var patpath = pagebox.getParentPath(winname);
+
         if ($.trim(patpath) == "") return page;
         var path = page;
         if (new RegExp("[a-zA-z]+://[^\s]*").exec(page)) return page;
@@ -93,7 +107,10 @@
         pagebox.coordinate(this.WinId);     //计算坐标相对窗体的比例
         //设置拖动
         if (this.IsDrag && !(this.Wdper == 100 && this.Hgper)) {
-            $(".PageBox[winid='" + this.WinId + "']").easydrag().setHandler(".PageBoxTitle")
+            var box = $(".PageBox[winid='" + this.WinId + "']");
+            if (box.size() > 0) {
+                try {
+                    box.easydrag().setHandler(".PageBoxTitle")
                 .ondrag(function () {
                     $(".PageBoxIframeMask").show();
                 }).ondrop(function (d) {
@@ -101,6 +118,9 @@
                     var winid = $(d.target).parents(".PageBox").attr("winid");
                     pagebox.coordinate(winid);
                 });
+                } catch (e) {
+                }
+            }
         }
         //关闭事件，全屏事件
         if (this.CloseEvent != null) pagebox.events.add(this.WinId + "_CloseEvent", this.CloseEvent);
@@ -224,7 +244,7 @@
         if (this.Parent != null && this.Parent.size() > 0) {
             initIndex = parseInt(this.Parent.css("z-index"));
         }
-        mask.css({ "position": "absolute", "z-index": initIndex + 10000, "display": "block",
+        mask.css({ "position": "absolute", "z-index": initIndex + 999999, "display": "block",
             "width": wd, "height": hg, top: 0, left: 0, opacity: .3, "background-color": "#999"
         }).fadeIn(1);
     }

@@ -374,11 +374,11 @@ namespace Song.ServiceInterfaces
         /// <returns>datatable中LastTime列为学习时间；studyTime：学习时间</returns>
         DataTable StudentStudyCourseLog(int orgid, int stid);
         /// <summary>
-        /// 学员学习章节的记录
+        /// 学员学习某一课程下所有章节的记录
         /// </summary>
-        /// <param name="couid"></param>
-        /// <param name="stid"></param>
-        /// <returns>datatable中，LastTime：最后学习时间；totalTime：视频时间长；playTime：播放进度；studyTime：学习时间</returns>
+        /// <param name="couid">课程id</param>
+        /// <param name="acid">学员账户id</param>
+        /// <returns>datatable中，LastTime：最后学习时间；totalTime：视频时间长；playTime：播放进度；studyTime：学习时间，complete：完成度百分比</returns>
         DataTable StudentStudyOutlineLog(int couid, int stid);
         #endregion
 
@@ -406,6 +406,12 @@ namespace Song.ServiceInterfaces
         /// <param name="stid">学员id</param>
         void QuesDelete(int quesid, int stid);
         /// <summary>
+        /// 清空错题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        void QuesClear(int couid, int stid);
+        /// <summary>
         /// 获取单一实体对象，按主键ID；
         /// </summary>
         /// <param name="identify">实体的主键</param>
@@ -427,6 +433,14 @@ namespace Song.ServiceInterfaces
         /// <param name="type">试题类型</param>
         /// <returns></returns>
         Questions[] QuesCount(int stid, int sbjid, int couid, int type, int count);
+        /// <summary>
+        /// 高频错题
+        /// </summary>
+        /// <param name="couid">课程ID</param>
+        /// <param name="type">题型</param>
+        /// <param name="count">取多少条</param>
+        /// <returns>试题的完整结构+count列，取试题的错误次数</returns>
+        Questions[] QuesOftenwrong(int couid, int type, int count);
         /// <summary>
         /// 分页获取学员的错误试题
         /// </summary>
@@ -464,6 +478,12 @@ namespace Song.ServiceInterfaces
         /// <param name="quesid"></param>
         /// <param name="stid"></param>
         void CollectDelete(int quesid, int stid);
+        /// <summary>
+        /// 清空错题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        void CollectClear(int couid, int stid);
         /// <summary>
         /// 获取单一实体对象，按主键ID；
         /// </summary>
@@ -528,6 +548,12 @@ namespace Song.ServiceInterfaces
         /// <param name="stid"></param>
         void NotesDelete(int quesid, int stid);
         /// <summary>
+        /// 清空试题
+        /// </summary>
+        /// <param name="couid">课程id</param>
+        /// <param name="stid">学员id</param>
+        void NotesClear(int couid, int stid);
+        /// <summary>
         /// 获取单一实体对象，按主键ID；
         /// </summary>
         /// <param name="identify">实体的主键</param>
@@ -541,20 +567,29 @@ namespace Song.ServiceInterfaces
         /// <returns></returns>
         Student_Notes NotesSingle(int quesid, int stid);
         /// <summary>
-        /// 当前学员的所有错题
+        /// 当前学员的所有笔记
         /// </summary>
         /// <param name="stid">学员id</param>
         /// <param name="type">试题类型</param>
         /// <returns></returns>
         Student_Notes[] NotesAll(int stid, int type);
         /// <summary>
+        /// 取当前学员的笔记
+        /// </summary>
+        /// <param name="stid"></param>
+        /// <param name="couid"></param>
+        /// <param name="type"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        Questions[] NotesCount(int stid, int couid, int type, int count);
+        /// <summary>
         /// 获取指定个数的对象
         /// </summary>
         /// <param name="stid">学员id</param>
-        /// <param name="quesid">试题id</param>
         /// <param name="type">试题类型</param>
+        /// <param name="count">数量</param>
         /// <returns></returns>
-        Student_Notes[] NotesCount(int stid, int quesid, int type, int count);
+        Questions[] NotesCount(int stid, int type, int count);
         /// <summary>
         /// 分页获取学员的错误试题
         /// </summary>

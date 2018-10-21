@@ -45,24 +45,19 @@ namespace Song.Site
                 Business.Do<IOrganization>().OrganBuildQrCode();
             })).Start();
 
+            ////章节缓存创建      
+            //new Thread(new ThreadStart(() =>
+            //{                    
+                
+            //})).Start();
+            Business.Do<IOutline>().OutlineBuildCache();
 
-            //当试题内容变更时的事件
-            Business.Do<IQuestions>().Save += delegate(object s, EventArgs ev)
-            {
-                new Thread(new ThreadStart(() =>
-                {
-                    Song.Entities.Questions[] ques = Business.Do<IQuestions>().QuesCount(-1, null, -1);
-                    Song.ServiceImpls.QuestionsMethod.QuestionsCache.Singleton.Delete("all");
-                    Song.ServiceImpls.QuestionsMethod.QuestionsCache.Singleton.Add(ques, int.MaxValue, "all");
-                })).Start();
-            };
+
+            #region  试题的事件            
             Business.Do<IQuestions>().OnSave(null, EventArgs.Empty);
+            #endregion
 
-            //当账号内容变更时
-            Business.Do<IAccounts>().Save += delegate(object s, EventArgs ev)
-            {
-                Extend.LoginState.Accounts.Refresh(Extend.LoginState.Accounts.CurrentUserId);                
-            };
+            
 
         }    
 

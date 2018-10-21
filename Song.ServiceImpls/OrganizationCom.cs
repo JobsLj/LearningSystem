@@ -75,6 +75,7 @@ namespace Song.ServiceImpls
                     tran.Update<Teacher>(new Field[] { Teacher._.Org_Name }, new object[] { entity.Org_Name }, Teacher._.Org_ID == entity.Org_ID);
                     tran.Update<TeacherSort>(new Field[] { TeacherSort._.Org_Name }, new object[] { entity.Org_Name }, TeacherSort._.Org_ID == entity.Org_ID);
                     tran.Commit();
+                    this.OrganBuildCache();
                 }
                 catch
                 {
@@ -101,6 +102,7 @@ namespace Song.ServiceImpls
                     trans.Update<Organization>(new Field[] { Organization._.Org_IsDefault },
                         new object[] { false }, Organization._.Org_ID != identify);
                     trans.Commit();
+                    this.OrganBuildCache();
                 }
                 catch (Exception ex)
                 {
@@ -272,11 +274,14 @@ namespace Song.ServiceImpls
         {
             this.OrganBuildCache();  //重新构建缓存  
             //批量生成二维码
-            List<Organization> orgs = WeiSha.Common.Cache<Organization>.Data.List;           
-            foreach(Song.Entities.Organization o in orgs)
-            {                
-               OrganBuildQrCode(o);                
-            }            
+            List<Organization> orgs = WeiSha.Common.Cache<Organization>.Data.List;
+            if (orgs != null)
+            {
+                foreach (Song.Entities.Organization o in orgs)
+                {
+                    OrganBuildQrCode(o);
+                }
+            }
         }
         /// <summary>
         /// 生成当前机构的手机端二维码
@@ -313,6 +318,16 @@ namespace Song.ServiceImpls
         }
         public Organization[] OrganAll(bool? isUse, int level)
         {
+            //从缓存中读取
+            List<Organization> list = WeiSha.Common.Cache<Organization>.Data.List;
+            if (list == null || list.Count < 1) list = this.OrganBuildCache();
+            //linq查询
+            var from = from l in list select l;
+            if (level > 0) from = from.Where<Organization>(p => p.Olv_ID == level);
+            if (isUse != null) from = from.Where<Organization>(p => p.Org_IsUse == (bool)isUse);
+            List<Organization> tm = from.ToList<Organization>();
+            if (tm.Count > 0) return tm.ToArray<Organization>();
+            //orm查询
             WhereClip wc = new WhereClip();
             if (isUse != null) wc.And(Organization._.Org_IsUse == (bool)isUse);
             if (level > -1) wc.And(Organization._.Olv_ID == level);
@@ -392,16 +407,20 @@ namespace Song.ServiceImpls
                 }
             }
         }
+        private static object lock_cache_build = new object();
         /// <summary>
         /// 构建缓存
         /// </summary>
         public List<Organization> OrganBuildCache()
         {
-            WeiSha.Common.Cache<Song.Entities.Organization>.Data.Clear();
-            Song.Entities.Organization[] org = this.OrganAll(null, -1);
-            foreach (Song.Entities.Organization o in org)            
-                WeiSha.Common.Cache<Song.Entities.Organization>.Data.Add(o);
-            return WeiSha.Common.Cache<Organization>.Data.List;
+            lock (lock_cache_build)
+            {
+                WeiSha.Common.Cache<Song.Entities.Organization>.Data.Clear();
+                Song.Entities.Organization[] org = Gateway.Default.From<Organization>()
+                    .OrderBy(Organization._.Org_RegTime.Desc).ToArray<Organization>();
+                WeiSha.Common.Cache<Song.Entities.Organization>.Data.Fill(org);
+                return WeiSha.Common.Cache<Organization>.Data.List;
+            }
         }
         public Organization[] OrganPager(bool? isUse, int level, string searTxt, int size, int index, out int countSum)
         {

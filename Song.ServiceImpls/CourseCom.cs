@@ -58,7 +58,7 @@ namespace Song.ServiceImpls
                 if (current == null)
                 {
                     current = new Course();
-                    current.Cou_Name = listName[i];
+                    current.Cou_Name = listName[i].Trim();
                     current.Cou_IsUse = true;
                     current.Org_ID = orgid;
                     current.Sbj_ID = sbjid;
@@ -121,7 +121,10 @@ namespace Song.ServiceImpls
                     //    tran.Update<Student_Course>(new Field[] { Student_Course._.Stc_IsFree }, new object[] { entity.Cou_IsFree }, Student_Course._.Cou_ID == entity.Cou_ID);
                     //    tran.Update<Student_Course>(new Field[] { Student_Course._.Stc_EndTime }, new object[] { DateTime.Now }, Student_Course._.Cou_ID == entity.Cou_ID);
                     //}
-                    tran.Update<TestPaper>(new Field[] { TestPaper._.Cou_Name }, new object[] { entity.Cou_Name }, TestPaper._.Cou_ID == entity.Cou_ID);
+                    tran.Update<TestPaper>(
+                        new Field[] { TestPaper._.Cou_Name, TestPaper._.Sbj_ID, TestPaper._.Sbj_Name },
+                        new object[] { entity.Cou_Name, entity.Sbj_ID, entity.Sbj_Name },
+                        TestPaper._.Cou_ID == entity.Cou_ID);
                     tran.Save<Course>(entity);
                     tran.Commit();
                 }
@@ -269,6 +272,7 @@ namespace Song.ServiceImpls
         /// <returns></returns>
         public List<Course> CourseForStudent(int stid, string sear, int state, bool? istry, int count)
         {
+            if (stid <= 0) return null;
             WhereClip wc = Student_Course._.Ac_ID == stid;
             //Song.Entities.Organization org = Business.Do<IOrganization>().OrganCurrent();
             //if (org != null)

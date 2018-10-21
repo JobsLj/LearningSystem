@@ -53,7 +53,8 @@ namespace Song.ServiceImpls
                             tran.Delete<RechargeCode>(r);
                     }
                     tran.Update<RechargeCode>(new Field[] { RechargeCode._.Rc_Price, RechargeCode._.Rc_LimitStart, RechargeCode._.Rc_LimitEnd },
-                        new object[] { entity.Rs_Price, entity.Rs_LimitStart, entity.Rs_LimitEnd }, RechargeCode._.Rs_ID == entity.Rs_ID && RechargeCode._.Rc_IsUsed == false);
+                        new object[] { entity.Rs_Price, entity.Rs_LimitStart, entity.Rs_LimitEnd }, 
+                        RechargeCode._.Rs_ID == entity.Rs_ID && RechargeCode._.Rc_IsUsed == false);
                     tran.Save<RechargeSet>(entity);
                     tran.Commit();
                 }
@@ -493,6 +494,18 @@ namespace Song.ServiceImpls
             WhereClip wc = new WhereClip();
             if (orgid > 0) wc &= RechargeCode._.Org_ID == orgid;
             if (rsid > 0) wc &= RechargeCode._.Rs_ID == rsid;
+            if (isEnable != null) wc &= RechargeCode._.Rc_IsEnable == isEnable;
+            if (isUsed != null) wc &= RechargeCode._.Rc_IsUsed == isUsed;
+            countSum = Gateway.Default.Count<RechargeCode>(wc);
+            return Gateway.Default.From<RechargeCode>()
+                .Where(wc).OrderBy(RechargeCode._.Rc_CrtTime.Desc).ToArray<RechargeCode>(size, (index - 1) * size);
+        }
+        public RechargeCode[] RechargeCodePager(int orgid, int rsid, string code, bool? isEnable, bool? isUsed, int size, int index, out int countSum)
+        {
+            WhereClip wc = new WhereClip();
+            if (orgid > 0) wc &= RechargeCode._.Org_ID == orgid;
+            if (rsid > 0) wc &= RechargeCode._.Rs_ID == rsid;
+            if (!string.IsNullOrWhiteSpace(code)) wc &= RechargeCode._.Rc_Code.Like("%" + code + "%");
             if (isEnable != null) wc &= RechargeCode._.Rc_IsEnable == isEnable;
             if (isUsed != null) wc &= RechargeCode._.Rc_IsUsed == isUsed;
             countSum = Gateway.Default.Count<RechargeCode>(wc);

@@ -25,7 +25,8 @@
     });
 });
 //超链接的事件
-function a_click() {
+function a_click(event) {
+    var v = this.onclick;
     var type = $.trim(this.getAttribute("type"));
     var target = $.trim(this.getAttribute("target"));
     if (type == "link" || type == null) {
@@ -82,6 +83,11 @@ function a_click() {
         if (phone.indexOf(":") > -1) phone = phone.substring(phone.lastIndexOf(":") + 1);
         if (phone.indexOf("?") > -1) phone = phone.substring(0, phone.indexOf("?"));
         new PageBox("拨打电话", "CallPhone.ashx?phone=" + phone, 80, 150, "url").Open();
+    }
+    //点击事件
+    if (type == "click") {
+        var href = this.href;
+        this.click();
     }
 }
 /*
